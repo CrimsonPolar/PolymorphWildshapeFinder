@@ -1,88 +1,52 @@
-var fs, https, mimetypes, options, path, port, server;
+var fs = require('fs');
+var path = require('path');
+var express = require('express');
+var port = process.env.port || 3000;
+const compression = require('compression');
 
-fs = require('fs');
-https = require('https');
-path = require('path');
-port = process.env.PORT ? process.env.PORT : 3000;
-
-console.log("== Loading index.html");
-var indexHTML = fs.readFileSync('./public/index.html');
-
-console.log("== Loading style.css");
-var style = fs.readFileSync('./public/style.css');
-
-console.log("== Loading index.js");
-var indexJS = fs.readFileSync('./public/index.js');
-
-console.log("== Loading 404.html");
-var notFoundHTML = fs.readFileSync('./public/404.html');
-
-mimetypes = {
-    'css': 'text/css',
-    'html': 'text/html',
-    'js': 'application/javascript'
-}
-
-options = {
-    pfx: fs.readFileSync('ssl/test.pfx'),
-    passphrase: 'password'
-};
-
-server = https.createServer(options, function(request, response) {
-    console.log("Request received for " + request.url);
-    switch (request.url) {
-        case '':
-            response.writeHead(200, {
-                'ContentType': 'text/html'
-            });
-            response.write(indexHTML);
-            break;
-
-        case '/':
-            response.writeHead(200, {
-                'ContentType': 'text/html'
-            });
-            response.write(indexHTML);
-            break;
-
-        case '/index.html':
-            response.writeHead(200, {
-                'ContentType': 'text/html'
-            });
-            response.write(indexHTML);
-            break;
-
-        case '/404.html':
-            response.writeHead(200, {
-                'ContentType': 'text/html'
-            });
-            response.write(notFoundHTML);
-            break;
-
-        case '/style.css':
-            response.writeHead(200, {
-                'ContentType': 'text/css'
-            });
-            response.write(style);
-            break;
-
-        case '/index.js':
-            response.writeHead(200, {
-                'ContentType': 'application/javascript'
-            });
-            response.write(indexJS);
-            break;
-
-        default:
-            response.writeHead(404, {
-                'ContentType': 'text/html'
-            });
-            response.write(notFoundHTML);
-            break;
-    }
-    response.end();
+var mysql = require('mysql');
+// Hardcoding this is terrible practice, but it's just proof of concept
+var con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "aK0Ito7$iqha74$az7Ba"
 });
 
-server.listen(port, function() {
-    console.log("== Server is listening on port " + port);
+
+con.connect(function(err) {
+    if (err) throw err;
+    console.log("== Successfully connected to SQL server!");
+});
+
+function queryDB(query) {
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            console.log("== Database error when using query:", query);
+        } else {
+            return result;
+        }
+    });
+}
+
+var app = express();
+var exphbs = require('express-handlebars');
+
+app.engine('handlebars', exphbs({ defaultLayout: null }));
+app.set('view engine', 'handlebars');
+
+app.use(compression());
+app.use(express.static('public'));
+
+app.get('/', function(req, res, next) {
+    res.status(200).render('index', {
+        beastData: queryDB("SELECT * FROM beasts.stats WHERE CHARINDEX(" + req.query.name + ", name) > 0 ORDER BY " + (req.query.orderby || "name"))
+    });
+});
+
+app.get('*', function(req, res) {
+    res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+});
+
+app.listen(port, function() {
+    console.log('== Server is listening on port', port);
 });
