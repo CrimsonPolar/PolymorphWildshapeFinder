@@ -8,27 +8,75 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700" rel="stylesheet">
 
+    <link rel="icon" href="./img/LogoMakr_3hCM7a.png">
+
     <link rel="stylesheet" href="/style.css" media="screen">
 
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.runtime.js"></script>
 
-    <script src="/public/indexPrecompiled.js"></script>
-    <script src="/public/beastTableEntryPrecompiled.js"></script>
+    <!-- Handlebars Precompiled Templates -->
+    <script src="indexPrecompiled.js"></script>
+    <script src="beastTableEntryPrecompiled.js"></script>
 
     <script src="/index.js" charset="utf-8" defer></script>
+
+    <!-- JQuery and Jquery UI dependencies -->
+    <script src="../libs/jquery-3.5.1.min.js"></script>
+    <script src="../libs/jquery-ui.min.js"></script>
+    <link href="../libs/jquery-ui.min.css" rel="stylesheet">
 
 </head>
 
 <body>
-    <h1>Weclome to Beast Finder!</h1>
-    <main class="table-container">
-        {{#each beastData}}
-            {{> beastTableEntry}}
-        {{/each}}
-        {{#if error}}
-            <h2>No results!</h2>
-        {{/if}}
-    </main>
+    <div class="viewer">
+        <h1>Weclome to Beast Finder!</h1>
+        <ul class="filters">
+            <li>
+                <input type="text" id="search-name" placeholder="Name"/>
+            </li>
+            <li>
+                <input type="text" id="search-challenge-rating" placeholder="CR"/>
+            </li>
+            <li>
+                <input type="text" id="search-size" placeholder="Size"/>
+            </li>
+            <li>
+                <input type="text" id="search-environment" placeholder="Environment"/>
+            </li>
+            <li>
+                <input type="number" id="search-hit-points" placeholder="Hit Points"/>
+            </li>
+            <li>
+                <input type="number" id="search-armor-class" placeholder="AC"/>
+            </li>
+            <li>
+                <input type="number" id="search-strength" placeholder="Strength"/>
+            </li>
+            <li>
+                <input type="number" id="search-dexterity" placeholder="Dexterity"/>
+            </li>
+            <li>
+                <input type="number" id="search-constitution" placeholder="Constitution"/>
+            </li>
+            <li>
+                <input type="number" id="search-intelligence" placeholder="Intelligence"/>
+            </li>
+            <li>
+                <input type="number" id="search-wisdom" placeholder="Wisdom"/>
+            </li>
+            <li>
+                <input type="number" id="search-charisma" placeholder="Charisma"/>
+            </li>
+        </ul>
+        <main class="table-container">
+            {{#each beastData}}
+                {{> beastTableEntry}}
+            {{/each}}
+            {{#if error}}
+                <h2>No results!</h2>
+            {{/if}}
+        </main>
+    </div>
 </body>
 
 </html>

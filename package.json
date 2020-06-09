@@ -27,6 +27,7 @@
     "handlebars": "^4.7.6",
     "mysql": "^2.18.1",
     "mysql2": "^2.1.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "query-string": "^6.13.0"
   }
 }
