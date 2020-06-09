@@ -12,6 +12,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.runtime.js"></script>
 
+    <script src="/public/indexPrecompiled.js"></script>
+    <script src="/public/beastTableEntryPrecompiled.js"></script>
+
     <script src="/index.js" charset="utf-8" defer></script>
 
 </head>
@@ -22,6 +25,9 @@
         {{#each beastData}}
             {{> beastTableEntry}}
         {{/each}}
+        {{#if error}}
+            <h2>No results!</h2>
+        {{/if}}
     </main>
 </body>
 
